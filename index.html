@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Uair amháin - Enchanted Irish Learning for Kids</title>
+  <!-- Google Fonts: Ultra & Nunito -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Ultra&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Fixed 16:9 Aspect Ratio Container -->
+  <div class="viewport-wrapper">
+    <div id="game-container" class="game-container">
+      
+      <!-- Top Control Bar -->
+      <div class="audio-control-bar">
+        <button id="btn-audio-toggle" class="icon-btn" title="Sound On / Off">
+          <span class="icon" id="audio-icon">🔊</span>
+          <span class="btn-text" id="audio-btn-text">Sound: ON</span>
+        </button>
+        <button id="btn-fullscreen" class="icon-btn" title="Toggle Fullscreen">
+          <span class="icon">⛶</span>
+        </button>
+      </div>
+
+      <!-- Floating Reward Popup Container -->
+      <div id="floating-rewards-layer" class="floating-rewards-layer"></div>
+
+      <!-- ==============================================
+           SCENE 1: LOGIN & PORTAL SCREEN
+      =============================================== -->
+      <section id="login-scene" class="scene active">
+        <div class="scene-bg bg-login" style="background-image: url('Characters/background.png');"></div>
+        <canvas id="login-canvas" class="scene-canvas"></canvas>
+
+        <!-- Curved Title floating in an arc at 2/3 upper center -->
+        <div class="title-container">
+          <svg class="curved-title-svg" viewBox="0 0 1000 320">
+            <defs>
+              <path id="title-arc" d="M 100 240 Q 500 40 900 240" fill="transparent" />
+              <linearGradient id="gold-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#FFF9D2" />
+                <stop offset="30%" stop-color="#FFD700" />
+                <stop offset="70%" stop-color="#FFA500" />
+                <stop offset="100%" stop-color="#FF8C00" />
+              </linearGradient>
+              <filter id="glow-effect" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#5a2e04" flood-opacity="0.8" />
+                <feDropShadow dx="0" dy="0" stdDeviation="15" flood-color="#ffd700" flood-opacity="0.9" />
+              </filter>
+            </defs>
+            <text class="arc-title-text" filter="url(#glow-effect)">
+              <textPath href="#title-arc" startOffset="50%" text-anchor="middle">
+                Uair amháin
+              </textPath>
+            </text>
+          </svg>
+          <div class="subtitle-badge">✨ Once Upon a Time • Uair amháin in Éirinn ✨</div>
+        </div>
+
+        <!-- Floating Frosted Glass Login Card -->
+        <div class="login-card-wrapper floating-card">
+          <div class="glass-card">
+            <div class="card-header">
+              <div class="shamrock-icon">☘️</div>
+              <h2>Enchanted Portal</h2>
+              <p>Doras Draíochta • Step into Irish Wonders</p>
+            </div>
+
+            <form id="login-form" onsubmit="return false;">
+              <div class="input-group">
+                <label for="username">
+                  <span class="input-icon">👤</span> Username / Ainm Úsáideora
+                </label>
+                <input type="text" id="username" placeholder="Enter username..." autocomplete="off" value="admin">
+              </div>
+
+              <div class="input-group">
+                <label for="password">
+                  <span class="input-icon">🔑</span> Password / Pasfhocal
+                </label>
+                <input type="password" id="password" placeholder="Enter password..." autocomplete="off" value="123">
+              </div>
+
+              <div class="demo-hint-box">
+                <span>💡 Demo: <b>admin</b> | Pass: <b>123</b></span>
+                <button type="button" id="btn-quick-fill" class="btn-text-link">Auto-fill</button>
+              </div>
+
+              <div id="login-error-msg" class="error-msg"></div>
+
+              <button type="submit" id="btn-login" class="btn-magic-primary">
+                <span class="btn-sparkle">✨</span>
+                <span>ENTER THE WORLD • TOSAIGH</span>
+                <span class="btn-arrow">➔</span>
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <div class="footer-hint">
+          <span class="pulse-dot"></span> Click anywhere on screen to enable Celtic music & ambient nature sounds
+        </div>
+      </section>
+
+      <!-- ==============================================
+           SCENE 2: INTRO VIDEO CINEMA SCREEN
+      =============================================== -->
+      <section id="video-scene" class="scene">
+        <div class="video-cinema-container">
+          <div class="video-header-bar">
+            <div class="video-title-tag">
+              <span>☘️ Story of the Emerald Isle • Scéal na hÉireann</span>
+            </div>
+            <button id="btn-skip-video" class="btn-skip-magic" title="Skip to Classroom">
+              <span>Skip to Classroom • Téigh go dtí an Rang</span>
+              <span class="icon">➔</span>
+            </button>
+          </div>
+
+          <div class="video-player-frame">
+            <video id="intro-video-player" playsinline preload="auto">
+              <source src="Media/intro_irish.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            
+            <div id="video-play-overlay" class="video-play-overlay">
+              <button id="btn-play-video-big" class="big-play-btn">
+                <span>▶</span>
+              </button>
+              <p>Click to start the Irish folklore adventure video</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==============================================
+           SCENE 3: CLASSROOM LESSONS & MINIGAMES (CLASS 01.PNG + STANDALONE SPRITES)
+      =============================================== -->
+      <section id="classroom-scene" class="scene">
+        <!-- Clean Empty Classroom Background -->
+        <div class="scene-bg bg-classroom" style="background-image: url('Characters/class 01.png');"></div>
+
+        <!-- Confetti & Celebration Sparkles Canvas -->
+        <canvas id="classroom-canvas" class="scene-canvas"></canvas>
+
+        <!-- Top Navigation Ribbon / Quest Tabs -->
+        <div class="classroom-nav-bar">
+          <button id="tab-lesson" class="nav-tab active" data-view="lesson">
+            <span>📖 Lesson 1: Greetings</span>
+          </button>
+          <button id="tab-game1" class="nav-tab" data-view="vso-game">
+            <span>🚂 VSO Train Game</span>
+          </button>
+          <button id="tab-game2" class="nav-tab" data-view="mutation-game">
+            <span>✨ Mutation Matcher</span>
+          </button>
+          <button id="tab-quiz" class="nav-tab" data-view="quiz">
+            <span>⭐ Celtic Quiz</span>
+          </button>
+          <div class="score-stars-box">
+            <span class="star-icon">⭐</span>
+            <span id="player-score">Stars: 0</span>
+          </div>
+        </div>
+
+        <!-- Left Character: Teacher Muime (Positioned on the left wing, unobscured face) -->
+        <div id="class-teacher-container" class="class-character-wrapper left-wing">
+          <img src="Characters/Muime.png" alt="Teacher Muime" class="sprite-char" id="class-muime-img">
+          <div class="character-scroll-badge">
+            <span class="badge-role">Múinteoir</span>
+            <span class="badge-name">Teacher Muime ☘️</span>
+          </div>
+          <!-- Teacher Speech Bubble positioned safely below/to side -->
+          <div class="character-speech-bubble" id="teacher-speech-box">
+            <div class="speech-speaker">🧙‍♀️ Teacher Muime:</div>
+            <div class="speech-quote" id="teacher-bubble-text">“Fáilte go dtí an rang! Welcome to our classroom! Let's learn Irish together!”</div>
+          </div>
+        </div>
+
+        <!-- Right Character: Classmate Cara (Positioned on the right wing, unobscured face) -->
+        <div id="class-cara-container" class="class-character-wrapper right-wing">
+          <img src="Characters/Cara.png" alt="Classmate Cara" class="sprite-char" id="class-cara-img">
+          <div class="character-scroll-badge cara-badge">
+            <span class="badge-role">Comhscoláire</span>
+            <span class="badge-name">Cara the Hare 🐰</span>
+          </div>
+          <!-- Cara Speech Bubble positioned safely below/to side -->
+          <div class="character-speech-bubble cara-bubble" id="cara-speech-box">
+            <div class="speech-speaker">🐰 Cara the Classmate:</div>
+            <div class="speech-quote" id="cara-bubble-text">“Dia dhuit! I am ready to practice with you! Let's earn stars! ⭐”</div>
+          </div>
+        </div>
+
+        <!-- Center Interactive Learning Blackboard (Placed cleanly in the middle window opening) -->
+        <div class="blackboard-interactive-container">
+          
+          <!-- VIEW 1: LESSON 1 - GREETINGS & INTRODUCTIONS -->
+          <div id="view-lesson" class="board-view active">
+            <div class="board-header">
+              <h3>☘️ Beannachtaí & Mé Féin • Greetings & Basics</h3>
+              <p class="board-sub">Click each scroll card to hear authentic Irish pronunciation!</p>
+            </div>
+
+            <div class="cards-grid">
+              <div class="irish-card" data-phrase="Dia dhuit!" data-phonetic="JEE-uh GHWIT" data-en="Hello">
+                <div class="card-celtic-knot">☘️</div>
+                <div class="card-ga">Dia dhuit!</div>
+                <div class="card-phonetic">/ JEE-uh GHWIT /</div>
+                <div class="card-en">Hello</div>
+                <button class="card-audio-btn">🔊 Listen</button>
+              </div>
+
+              <div class="irish-card" data-phrase="Dia is Muire dhuit!" data-phonetic="JEE-uh iss MWUR-uh GHWIT" data-en="Hello (Reply)">
+                <div class="card-celtic-knot">☘️</div>
+                <div class="card-ga">Dia is Muire dhuit!</div>
+                <div class="card-phonetic">/ JEE-uh iss MWUR-uh /</div>
+                <div class="card-en">Hello (Reply)</div>
+                <button class="card-audio-btn">🔊 Listen</button>
+              </div>
+
+              <div class="irish-card" data-phrase="Conas atá tú?" data-phonetic="KUN-us uh-TAW too?" data-en="How are you?">
+                <div class="card-celtic-knot">☘️</div>
+                <div class="card-ga">Conas atá tú?</div>
+                <div class="card-phonetic">/ KUN-us uh-TAW too /</div>
+                <div class="card-en">How are you?</div>
+                <button class="card-audio-btn">🔊 Listen</button>
+              </div>
+
+              <div class="irish-card" data-phrase="Tá mé go maith!" data-phonetic="TAW may guh MY!" data-en="I am well!">
+                <div class="card-celtic-knot">☘️</div>
+                <div class="card-ga">Tá mé go maith!</div>
+                <div class="card-phonetic">/ TAW may guh MY /</div>
+                <div class="card-en">I am well!</div>
+                <button class="card-audio-btn">🔊 Listen</button>
+              </div>
+
+              <div class="irish-card" data-phrase="Slán go fóill!" data-phonetic="SLAWN guh FOE-ill" data-en="Goodbye for now!">
+                <div class="card-celtic-knot">☘️</div>
+                <div class="card-ga">Slán go fóill!</div>
+                <div class="card-phonetic">/ SLAWN guh FOE-ill /</div>
+                <div class="card-en">Goodbye for now</div>
+                <button class="card-audio-btn">🔊 Listen</button>
+              </div>
+            </div>
+
+            <div class="board-action-footer">
+              <button id="btn-start-vso-from-lesson" class="btn-board-next">
+                <span>Play VSO Train Game</span>
+                <span class="icon">➔</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- VIEW 2: GAME 1 - VSO TRAIN BUILDER -->
+          <div id="view-vso-game" class="board-view">
+            <div class="board-header">
+              <h3>🚂 VSO Train Game • Word Order Challenge</h3>
+              <p class="board-sub">In Irish, the <b>Verb</b> comes first! Order: <b>Verb (Gníomh) $\rightarrow$ Subject (Ainmní) $\rightarrow$ Object (Cuspóir)</b></p>
+            </div>
+
+            <div class="vso-challenge-box">
+              <div class="vso-target-meaning">
+                <span>Target English Sentence: </span>
+                <b id="vso-target-text">"Cara is reading a book"</b>
+              </div>
+
+              <!-- Train Track Slots -->
+              <div class="train-slots-container">
+                <div class="train-slot" data-slot="0">
+                  <span class="slot-label">1. VERB • GNÍOMH</span>
+                  <div class="slot-dropzone" id="slot-0"></div>
+                </div>
+                <div class="train-slot" data-slot="1">
+                  <span class="slot-label">2. SUBJECT • AINMNÍ</span>
+                  <div class="slot-dropzone" id="slot-1"></div>
+                </div>
+                <div class="train-slot" data-slot="2">
+                  <span class="slot-label">3. OBJECT • CUSPÓIR</span>
+                  <div class="slot-dropzone" id="slot-2"></div>
+                </div>
+              </div>
+
+              <!-- Word Blocks Pool -->
+              <div class="word-blocks-pool" id="vso-words-pool"></div>
+
+              <div class="vso-controls">
+                <button id="btn-vso-check" class="btn-magic-primary btn-sm">
+                  <span>✨ Check Answer</span>
+                </button>
+                <button id="btn-vso-reset" class="btn-text-link">Reset Blocks</button>
+                <div id="vso-feedback" class="game-feedback"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- VIEW 3: GAME 2 - MUTATION MATCHER (SÉIMHIÚ & URÚ) -->
+          <div id="view-mutation-game" class="board-view">
+            <div class="board-header">
+              <h3>✨ Mutation Matcher • Séimhiú & Urú Magic</h3>
+              <p class="board-sub">Match root words with their mutated forms when combined with <b>"mo" (my)</b> or <b>"ár" (our)</b>!</p>
+            </div>
+
+            <div class="mutation-game-container">
+              <div class="mutation-rule-pill">
+                💡 <b>Rule:</b> "mo" adds <b>h</b> (Séimhiú: <i>mo mháthair</i>) | "ár" eclipses (Urú: <i>ár ndoras</i>)
+              </div>
+
+              <div class="mutation-match-grid" id="mutation-cards-grid"></div>
+
+              <div id="mutation-feedback" class="game-feedback"></div>
+            </div>
+          </div>
+
+          <!-- VIEW 4: CELTIC QUIZ & ASSESSMENT -->
+          <div id="view-quiz" class="board-view">
+            <div class="board-header">
+              <h3>⭐ Celtic Quick Quiz • Teastas Éireann</h3>
+              <p class="board-sub">Test your knowledge to earn your Apprentice Celtic Badge!</p>
+            </div>
+
+            <div class="quiz-container" id="quiz-container">
+              <div class="quiz-progress-bar">
+                <div class="quiz-progress-fill" id="quiz-progress-fill"></div>
+              </div>
+              
+              <div class="quiz-question-card">
+                <div class="quiz-q-num" id="quiz-q-num">Question 1 of 4</div>
+                <div class="quiz-q-text" id="quiz-q-text">How do you say "Hello" in Irish?</div>
+                <div class="quiz-options-list" id="quiz-options-list"></div>
+              </div>
+
+              <div id="quiz-feedback" class="game-feedback"></div>
+            </div>
+
+            <!-- Quiz Victory Screen -->
+            <div id="quiz-victory" class="quiz-victory-box hidden">
+              <div class="victory-medal">🏅</div>
+              <h3>Comhghairdeas! Congratulations!</h3>
+              <p>You have mastered foundational Irish greetings and sentence structure!</p>
+              <div class="victory-stars" id="victory-stars-display">⭐⭐⭐⭐</div>
+              <button id="btn-restart-adventure" class="btn-magic-primary">
+                <span>🔄 Play Again / Athsheinn</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Return / Logout Button -->
+        <button id="btn-back-from-class" class="btn-back-nav" title="Log Out & Return">
+          <span>⮌ Log Out / Logáil Amach</span>
+        </button>
+      </section>
+
+      <!-- ==============================================
+           TRANSITION OVERLAY
+      =============================================== -->
+      <div id="transition-overlay" class="transition-overlay">
+        <div class="transition-content">
+          <div class="magical-portal-spinner">☘️</div>
+          <div class="transition-text" id="transition-main-text">Stepping through the enchanted portal...</div>
+          <div class="transition-subtext" id="transition-sub-text">Ag dul tríd an doras draíochta...</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
